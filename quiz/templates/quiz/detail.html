@@ -1,0 +1,50 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container ">
+<h1 class="text-center">Welcome to DataFlair Quiz</h1>
+
+
+<div align="right " id="displaytimer"><b>Timer: 0 seconds</b></div>
+
+ <form method='post' action=''>
+    {% csrf_token %}
+  {%for q in quiz.get_questions %}
+     <p class="mt-5"> {{q}} </p>
+     <div class="form-check">
+     {%for a in q.get_answers%}
+         <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{q}}" id="flexRadioDefault{{a.id}}" value="{{a.content}}">
+            <label class="form-check-label" for="flexRadioDefault{{a.id}}">
+                {{a.content}}
+            </label>
+        </div>
+        {%endfor%}
+     </div>
+     {%endfor%}
+     <br>
+     <input id='timer' type='hidden' name="timer" value="">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+
+    {% block script %}
+        <script>
+            console.log('hello world')
+            const timer=document.getElementById('displaytimer')
+            console.log(timer.textContent)
+            const inputtag = document.getElementById('timer')
+
+            t={{quiz.time}}
+            setInterval(()=>{
+                t-=1
+                timer.innerHTML ="<b>Timer: " +t+" seconds</b>"
+                inputtag.value = t
+            },1000)
+        </script>
+    {% endblock script %}
+
+</div>
+{% endblock %}
+

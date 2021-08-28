@@ -1,0 +1,17 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="container">
+    <div class="top-cover mt-5">
+        <h5>Score: {{marks_of_user.score}}</h5>
+        <h5>Percentage: {{marks_of_user.percentage}}%</h5>
+        <h5>Time Taken: {{marks_of_user.time}} seconds</h5>
+        <h5>Correct answers: {{marks_of_user.correct}}</h5>
+        <h5>Incorrect answers: {{marks_of_user.incorrect}}</h5>
+        <h5>Total questions: {{quiz.number_of_questions}} </h5>
+
+    </div>
+</div>
+{% endblock %}
