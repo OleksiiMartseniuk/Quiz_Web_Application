@@ -22,9 +22,13 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'registration' %}">Registration</a>
       </li>
+
        {% else %}
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'home' %}">Home</a>
+      </li>
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url 'rating' %}">Rating</a>
       </li>
         {% endif %}
     </ul>
@@ -32,8 +36,8 @@
 
 
   {% if request.user.is_authenticated  %}
-    <span class="greet">Hello, {{request.user.first_name}}</span>
     <span ><a  class="greet" href="{% url 'profile' %}">Profile</a></span>
+    <span class="greet">Hello, {{request.user.first_name}}</span>
     <span ><a  class="greet" href="{% url 'logout' %}">Logout</a></span>
   {% endif %}
 </nav>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from .models import Answer, Quiz, Marks_Of_User
+from .models import Answer, Quiz, Marks_Of_User, Rating
 from .forms import LoginForm, RegistrationForms
 from django.contrib.auth import authenticate, login, logout
 
@@ -31,9 +31,19 @@ class DetailView(View):
         percentage = (correct / quiz.number_of_questions) * 100
         timer = quiz.time - int(request.POST.get('timer'))
         incorrect = quiz.number_of_questions - correct
+        if not Marks_Of_User.objects.filter(quiz=quiz, user=request.user).exists():
+            if Rating.objects.filter(user=request.user).exists():
+                rating = Rating.objects.get(user=request.user)
+                rating.rating = rating.rating + (percentage*10)
+                rating.save()
+            else:
+                Rating.objects.create(
+                    user=request.user,
+                    rating=percentage*10
+                )
         Marks_Of_User.objects.create(quiz=quiz,
                                      user=request.user,
-                                     score=(correct*10),
+                                     score=(percentage*10),
                                      percentage=percentage,
                                      time=timer,
                                      correct=correct,
@@ -89,6 +99,8 @@ class RegistrationView(View):
             new_user.save()
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
+            rating = Rating.objects.create(user=request.user)
+            rating.save()
             return redirect('home')
         return render(request, 'quiz/registration.html', {'form': form})
 
@@ -101,16 +113,42 @@ def logout_view(request):
 class ProfileView(View):
 
     def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('login')
         marks_of_user = Marks_Of_User.objects.filter(user=request.user)
-        return render(request, 'quiz/profile.html', {'marks_of_user': marks_of_user})
+        rating = Rating.objects.create(user=request.user)
+        context = {
+            'marks_of_user': marks_of_user,
+            'rating': rating
+        }
+        return render(request, 'quiz/profile.html', context)
 
 
 class DeleteView(View):
 
     def get(self, request, **kwargs):
         marks_of_user_id = kwargs.get('pk')
-        print(marks_of_user_id)
         marks_of_user = Marks_Of_User.objects.get(id=marks_of_user_id)
         marks_of_user.delete()
         return redirect('profile')
+
+
+class ClearView(View):
+
+    def get(self, request, **kwargs):
+        rating = Rating.objects.get(user=request.user)
+        marks_of_user = Marks_Of_User.objects.filter(user=request.user)
+        for obj in marks_of_user:
+            obj.delete()
+        rating.rating = 0
+        rating.save()
+        return redirect('profile')
+
+
+class RatingView(View):
+
+    def get(self, request):
+        rating = Rating.objects.order_by('-rating')
+        print(rating)
+        return render(request, 'quiz/rating.html', {'rating': rating})
 

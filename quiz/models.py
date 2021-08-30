@@ -47,3 +47,11 @@ class Marks_Of_User(models.Model):
 
     def __str__(self):
         return f'{str(self.quiz)} ({self.user.username})'
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.user.username

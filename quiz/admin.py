@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Quiz, Question, Answer, Marks_Of_User
+from .models import Quiz, Question, Answer, Marks_Of_User, Rating
 
 admin.site.register(Quiz)
 
@@ -15,4 +15,5 @@ class QuestionAdmin(admin.ModelAdmin):
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer)
 admin.site.register(Marks_Of_User)
+admin.site.register(Rating)
 

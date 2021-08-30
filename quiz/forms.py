@@ -8,6 +8,10 @@ class LoginForm(forms.ModelForm):
         model = User
         fields = ['username', 'password']
 
+        widgets = {
+            'password': forms.PasswordInput()
+        }
+
     def clean(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
@@ -28,6 +32,7 @@ class RegistrationForms(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput()
         }
+
     def clean_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():

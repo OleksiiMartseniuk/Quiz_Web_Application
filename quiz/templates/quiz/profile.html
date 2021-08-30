@@ -3,7 +3,13 @@
 {% block content %}
 {% load static %}
 <div class="container">
+
     <div class="top-cover mt-5">
+        <div class="mb-5">
+            <h5>First name: {{rating.user.first_name}}</h5>
+            <h5>Last name: {{rating.user.last_name}}</h5>
+            <h5>Rating: {{rating.rating}} <a class ="btn btn-danger" href="{% url 'clear' %}" >Clear</a></h5>
+        </div>
       {% if marks_of_user%}
         <table class="table">
   <thead>
@@ -33,7 +39,7 @@
   </tbody>
 </table>
       {%else%}
-      <h1 class="text-center"><a href="{% url 'home' %}">Нет даных пройдите викторину </a></h1>
+      <h1 class="text-center"><a href="{% url 'home' %}">No data pass the quiz</a></h1>
       {% endif%}
     </div>
 </div>

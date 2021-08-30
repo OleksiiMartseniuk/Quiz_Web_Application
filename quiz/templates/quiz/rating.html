@@ -1,0 +1,33 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="top-cover mt-5">
+      {% if rating%}
+        <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">User</th>
+      <th scope="col">Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data in rating%}
+    <tr>
+
+      <td>{{data.id}}</td>
+      <td>{{data.user.username}}</td>
+      <td>{{data.rating}} </td>
+
+    {% endfor%}
+  </tbody>
+</table>
+      {%else%}
+      <h1 class="text-center"><a href="{% url 'home' %}">No rating</a></h1>
+      {% endif%}
+    </div>
+</div>
+
+{% endblock %}
