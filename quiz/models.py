@@ -46,4 +46,4 @@ class Marks_Of_User(models.Model):
     incorrect = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return str(self.quiz)
+        return f'{str(self.quiz)} ({self.user.username})'

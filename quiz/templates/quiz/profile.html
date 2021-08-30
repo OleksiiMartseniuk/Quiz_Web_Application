@@ -1,0 +1,40 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="top-cover mt-5">
+      {% if marks_of_user%}
+        <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Quiz</th>
+      <th scope="col">Score</th>
+      <th scope="col">Percentage</th>
+      <th scope="col">Time Taken</th>
+        <th scope="col">Correct answers</th>
+        <th scope="col">Incorrect answers</th>
+        <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data in marks_of_user%}
+    <tr>
+
+      <td>{{data.quiz.name}}</td>
+      <td>{{data.score}}</td>
+      <td>{{data.percentage}} %</td>
+      <td>{{data.time}} seconds</td>
+      <td>{{data.correct}}</td>
+      <td>{{data.incorrect}}</td>
+      <td><a class ="btn btn-danger btn-lg" href="{% url 'delete' data.id %}" > </a></td>
+    </tr>
+    {% endfor%}
+  </tbody>
+</table>
+      {%else%}
+      <h1 class="text-center"><a href="{% url 'home' %}">Нет даных пройдите викторину </a></h1>
+      {% endif%}
+    </div>
+</div>
+{% endblock %}

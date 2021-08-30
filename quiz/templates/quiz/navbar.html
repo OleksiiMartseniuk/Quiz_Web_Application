@@ -30,8 +30,10 @@
     </ul>
   </div>
 
-  <span class="greet">Hello, {{request.user}}</span>
+
   {% if request.user.is_authenticated  %}
+    <span class="greet">Hello, {{request.user.first_name}}</span>
+    <span ><a  class="greet" href="{% url 'profile' %}">Profile</a></span>
     <span ><a  class="greet" href="{% url 'logout' %}">Logout</a></span>
   {% endif %}
 </nav>

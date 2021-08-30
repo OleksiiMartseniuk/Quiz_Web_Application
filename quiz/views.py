@@ -96,3 +96,21 @@ class RegistrationView(View):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+class ProfileView(View):
+
+    def get(self, request):
+        marks_of_user = Marks_Of_User.objects.filter(user=request.user)
+        return render(request, 'quiz/profile.html', {'marks_of_user': marks_of_user})
+
+
+class DeleteView(View):
+
+    def get(self, request, **kwargs):
+        marks_of_user_id = kwargs.get('pk')
+        print(marks_of_user_id)
+        marks_of_user = Marks_Of_User.objects.get(id=marks_of_user_id)
+        marks_of_user.delete()
+        return redirect('profile')
+
