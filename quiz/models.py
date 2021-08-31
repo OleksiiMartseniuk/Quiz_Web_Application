@@ -32,7 +32,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"question: {self.question.content}, answer: {self.content}, correct: {self.correct}"
+        return f'question: {self.question.content}, answer: {self.content}, correct: {self.correct}'
 
 
 class Marks_Of_User(models.Model):

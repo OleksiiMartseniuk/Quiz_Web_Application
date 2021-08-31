@@ -32,15 +32,9 @@ class DetailView(View):
         timer = quiz.time - int(request.POST.get('timer'))
         incorrect = quiz.number_of_questions - correct
         if not Marks_Of_User.objects.filter(quiz=quiz, user=request.user).exists():
-            if Rating.objects.filter(user=request.user).exists():
-                rating = Rating.objects.get(user=request.user)
-                rating.rating = rating.rating + (percentage*10)
-                rating.save()
-            else:
-                Rating.objects.create(
-                    user=request.user,
-                    rating=percentage*10
-                )
+            rating = Rating.objects.get(user=request.user)
+            rating.rating = rating.rating + (percentage*10)
+            rating.save()
         Marks_Of_User.objects.create(quiz=quiz,
                                      user=request.user,
                                      score=(percentage*10),
@@ -76,6 +70,8 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
+                if not Rating.objects.filter(user=request.user).exists():
+                    Rating.objects.create(user=request.user)
                 return redirect('home')
         return render(request, 'quiz/login.html', {'form': form})
 
@@ -99,8 +95,7 @@ class RegistrationView(View):
             new_user.save()
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
-            rating = Rating.objects.create(user=request.user)
-            rating.save()
+            Rating.objects.create(user=request.user)
             return redirect('home')
         return render(request, 'quiz/registration.html', {'form': form})
 
@@ -116,7 +111,7 @@ class ProfileView(View):
         if not request.user.is_authenticated:
             return redirect('login')
         marks_of_user = Marks_Of_User.objects.filter(user=request.user)
-        rating = Rating.objects.create(user=request.user)
+        rating = Rating.objects.get(user=request.user)
         context = {
             'marks_of_user': marks_of_user,
             'rating': rating
