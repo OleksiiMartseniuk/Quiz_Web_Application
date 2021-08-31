@@ -1,0 +1,12 @@
+{% load crispy_forms_tags %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+    <h3 class="text-center">Upload File</h3>
+     <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" class="btn btn-success mt-3" value="Confirm">
+    </form>
+</div>
+</div>
