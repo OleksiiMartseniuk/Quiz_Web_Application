@@ -36,6 +36,7 @@
 
 
   {% if request.user.is_authenticated  %}
+    <span ><a  class="greet" href="{% url 'upload-file' %}">Add Quiz</a></span>
     <span ><a  class="greet" href="{% url 'profile' %}">Profile</a></span>
     <span class="greet">Hello, {{request.user.first_name}}</span>
     <span ><a  class="greet" href="{% url 'logout' %}">Logout</a></span>

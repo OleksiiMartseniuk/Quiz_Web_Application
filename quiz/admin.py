@@ -1,7 +1,10 @@
 from django.contrib import admin
 from .models import Quiz, Question, Answer, Marks_Of_User, Rating
 
-admin.site.register(Quiz)
+
+@admin.register(Quiz)
+class QuizAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'url': ('name',)}
 
 
 class AnswerInLine(admin.TabularInline):

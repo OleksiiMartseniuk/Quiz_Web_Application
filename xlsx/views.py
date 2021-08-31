@@ -4,6 +4,7 @@ from .forms import XlsxModelForm
 from .models import Xlsx
 import openpyxl
 from quiz.models import Quiz, Question, Answer
+from django.contrib import messages
 
 
 class UploadFileView(View):
@@ -15,14 +16,25 @@ class UploadFileView(View):
     def post(self, request):
         form = XlsxModelForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-            form.save()
-            form = XlsxModelForm()
-            obj = Xlsx.objects.get(activated=False)
+            form_obj = form.save(commit=False)
+            form_obj.author = request.user
+            form_obj.save()
+            form_obj = XlsxModelForm()
+            obj = Xlsx.objects.get(activated=False, author=request.user)
             try:
                 book = openpyxl.open(obj.file_name.path, read_only=True)
 
                 sheet = book.worksheets[0]
                 for row in range(2, sheet.max_row+1):
+                    if Quiz.objects.filter(name=sheet[row][0].value,
+                                           desc=sheet[row][1].value,
+                                           number_of_questions=int(sheet[row][2].value),
+                                           time=int(sheet[row][3].value)).exists():
+                        obj.activated = True
+                        obj.save()
+                        messages.add_message(request, messages.ERROR, 'The object already exists!')
+                        return render(request, 'xlsx/upload.html', {'form': form})
+
                     Quiz.objects.create(
                         name=sheet[row][0].value,
                         desc=sheet[row][1].value,
@@ -46,10 +58,10 @@ class UploadFileView(View):
                         correct=bool(sheet_2[row][1].value),
                         question=question_obj
                     )
+                messages.add_message(request, messages.INFO, 'Adding successfully')
             except Exception:
-                print('Incorrectly filled file!')
-
+                messages.add_message(request, messages.ERROR, 'Incorrectly filled file!')
             obj.activated = True
             obj.save()
-        return render(request, 'xlsx/upload.html', {'form': form})
+        return render(request, 'xlsx/upload.html', {'form': form_obj})
 

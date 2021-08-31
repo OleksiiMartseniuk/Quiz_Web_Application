@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from .models import Answer, Quiz, Marks_Of_User, Rating
@@ -12,18 +13,18 @@ class QuizView(View):
         return render(request, 'quiz/home.html', {'quiz': quiz})
 
 
-class DetailView(View):
+class DetailView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect('login')
-        name_quiz = kwargs.get('name')
-        quiz = Quiz.objects.get(name=name_quiz)
+        name_quiz = kwargs.get('url')
+        quiz = Quiz.objects.get(url=name_quiz)
         return render(request, 'quiz/detail.html', {'quiz': quiz})
 
     def post(self, request, **kwargs):
         correct = 0
-        name_quiz = kwargs.get('name')
-        quiz = Quiz.objects.get(name=name_quiz)
+        name_quiz = kwargs.get('url')
+        quiz = Quiz.objects.get(url=name_quiz)
         for count in quiz.get_questions():
             rez = Answer.objects.get(content=request.POST.get(f'{count}'), question=count)
             if rez.correct:
@@ -46,7 +47,7 @@ class DetailView(View):
 
 
 class ResultView(View):
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         marks_of_user = Marks_Of_User.objects.latest('data')
         quiz = Quiz.objects.get(name=marks_of_user.quiz.name)
         context = {
@@ -60,7 +61,7 @@ class LoginView(View):
 
     def get(self, request):
         form = LoginForm(request.POST or None)
-        return render(request, 'quiz/login.html', {'form': form})
+        return render(request, 'quiz/authenticated/login.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST or None)
@@ -73,14 +74,14 @@ class LoginView(View):
                 if not Rating.objects.filter(user=request.user).exists():
                     Rating.objects.create(user=request.user)
                 return redirect('home')
-        return render(request, 'quiz/login.html', {'form': form})
+        return render(request, 'quiz/authenticated/login.html', {'form': form})
 
 
 class RegistrationView(View):
 
     def get(self, request):
         form = RegistrationForms(request.POST or None)
-        return render(request, 'quiz/registration.html', {'form': form})
+        return render(request, 'quiz/authenticated/registration.html', {'form': form})
 
     def post(self, request):
         form = RegistrationForms(request.POST or None)
@@ -97,7 +98,7 @@ class RegistrationView(View):
             login(request, user)
             Rating.objects.create(user=request.user)
             return redirect('home')
-        return render(request, 'quiz/registration.html', {'form': form})
+        return render(request, 'quiz/authenticated/registration.html', {'form': form})
 
 
 def logout_view(request):
@@ -105,11 +106,10 @@ def logout_view(request):
     return redirect('login')
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
+    login_url = 'login'
 
     def get(self, request):
-        if not request.user.is_authenticated:
-            return redirect('login')
         marks_of_user = Marks_Of_User.objects.filter(user=request.user)
         rating = Rating.objects.get(user=request.user)
         context = {
@@ -130,7 +130,7 @@ class DeleteView(View):
 
 class ClearView(View):
 
-    def get(self, request, **kwargs):
+    def get(self, request):
         rating = Rating.objects.get(user=request.user)
         marks_of_user = Marks_Of_User.objects.filter(user=request.user)
         for obj in marks_of_user:

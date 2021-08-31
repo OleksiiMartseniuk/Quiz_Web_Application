@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 class Quiz(models.Model):
     name = models.CharField(max_length=50)
+    ### изменить
+    url = models.SlugField(max_length=200, unique=True, blank=True, null=True)
     desc = models.CharField(max_length=500)
     number_of_questions = models.IntegerField(default=1)
     time = models.IntegerField(help_text="Duration of the quiz in seconds", default="1")
@@ -42,6 +44,7 @@ class Marks_Of_User(models.Model):
     percentage = models.FloatField()
     time = models.IntegerField(help_text="lead time", default="1")
     data = models.DateTimeField(auto_now_add=True)
+    ### изменить
     correct = models.IntegerField(blank=True, null=True)
     incorrect = models.IntegerField(blank=True, null=True)
 
