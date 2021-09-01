@@ -15,10 +15,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Xlsx',
+            name='xlsx',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file_name', models.FileField(upload_to='Xlsx')),
+                ('file_name', models.FileField(upload_to='xlsx')),
                 ('uploaded', models.DateTimeField(auto_now_add=True)),
                 ('activated', models.BooleanField(default=False)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
