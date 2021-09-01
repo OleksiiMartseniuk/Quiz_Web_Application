@@ -3,15 +3,16 @@
 {% block content %}
 
 <div class="container ">
-<h1 class="text-center">Welcome to DataFlair Quiz</h1>
+<h1 class="text-center mt-2">Welcome to DataFlair Quiz</h1>
 
-
+  {% include 'xlsx/messages.html' %}
 <div align="right " id="displaytimer"><b>Timer: 0 seconds</b></div>
 
  <form method='post' action=''>
     {% csrf_token %}
   {%for q in quiz.get_questions %}
      <p class="mt-5"> {{q}} </p>
+
      <div class="form-check">
      {%for a in q.get_answers%}
          <div class="form-check">
@@ -25,7 +26,7 @@
      {%endfor%}
      <br>
      <input id='timer' type='hidden' name="timer" value="">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary mb-3">Submit</button>
   </form>
 
 

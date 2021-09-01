@@ -5,6 +5,7 @@ from .models import Answer, Quiz, Marks_Of_User, Rating
 from .forms import LoginForm, RegistrationForms
 from django.contrib.auth import authenticate, login, logout
 from .utils import PermissionsViewMixin
+from django.contrib import messages
 
 
 class QuizView(PermissionsViewMixin, View):
@@ -36,6 +37,14 @@ class DetailView(LoginRequiredMixin, PermissionsViewMixin, View):
         name_quiz = kwargs.get('url')
         quiz = Quiz.objects.get(url=name_quiz)
         for count in quiz.get_questions():
+            if not Answer.objects.filter(content=request.POST.get(f'{count}'), question=count).exists():
+                context = {
+                    **self.permissions_view(request),
+                    'quiz': quiz,
+                }
+                messages.add_message(request, messages.ERROR, 'The form has been filled out '
+                                                              'incorrectly. Try some more roses')
+                return render(request, 'quiz/detail.html', context)
             rez = Answer.objects.get(content=request.POST.get(f'{count}'), question=count)
             if rez.correct:
                 correct += 1
