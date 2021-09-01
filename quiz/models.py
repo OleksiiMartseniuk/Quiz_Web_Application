@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 
 class Quiz(models.Model):
@@ -12,6 +13,11 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.url:
+            self.url = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_questions(self):
         return self.question_set.all()

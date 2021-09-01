@@ -2,8 +2,11 @@
 
 {% block content %}
 {% load static %}
+
 <div class="container">
     <div class="top-cover mt-5">
+        <h3 class="text-center mb-3">Rating</h3>
+
       {% if rating%}
         <table class="table">
   <thead>
@@ -14,10 +17,10 @@
     </tr>
   </thead>
   <tbody>
-    {% for data in rating%}
+    {% for data, id in rating%}
     <tr>
 
-      <td>{{data.id}}</td>
+      <td>{{id}}</td>
       <td>{{data.user.username}}</td>
       <td>{{data.rating}} </td>
 
@@ -29,5 +32,7 @@
       {% endif%}
     </div>
 </div>
+<script>
 
+</script>
 {% endblock %}

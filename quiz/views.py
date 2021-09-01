@@ -4,22 +4,32 @@ from django.views.generic.base import View
 from .models import Answer, Quiz, Marks_Of_User, Rating
 from .forms import LoginForm, RegistrationForms
 from django.contrib.auth import authenticate, login, logout
+from .utils import PermissionsViewMixin
 
 
-class QuizView(View):
+class QuizView(PermissionsViewMixin, View):
 
     def get(self, request):
         quiz = Quiz.objects.all()
-        return render(request, 'quiz/home.html', {'quiz': quiz})
+        context = {
+            **self.permissions_view(request),
+            'quiz': quiz,
+        }
+
+        return render(request, 'quiz/home.html', context)
 
 
-class DetailView(LoginRequiredMixin, View):
+class DetailView(LoginRequiredMixin, PermissionsViewMixin, View):
     login_url = 'login'
 
     def get(self, request, **kwargs):
         name_quiz = kwargs.get('url')
         quiz = Quiz.objects.get(url=name_quiz)
-        return render(request, 'quiz/detail.html', {'quiz': quiz})
+        context = {
+            **self.permissions_view(request),
+            'quiz': quiz,
+        }
+        return render(request, 'quiz/detail.html', context)
 
     def post(self, request, **kwargs):
         correct = 0
@@ -46,11 +56,12 @@ class DetailView(LoginRequiredMixin, View):
         return redirect('result')
 
 
-class ResultView(View):
+class ResultView(PermissionsViewMixin, View):
     def get(self, request):
         marks_of_user = Marks_Of_User.objects.latest('data')
         quiz = Quiz.objects.get(name=marks_of_user.quiz.name)
         context = {
+            **self.permissions_view(request),
             'marks_of_user': marks_of_user,
             'quiz': quiz
         }
@@ -106,13 +117,14 @@ def logout_view(request):
     return redirect('login')
 
 
-class ProfileView(LoginRequiredMixin, View):
+class ProfileView(LoginRequiredMixin, PermissionsViewMixin, View):
     login_url = 'login'
 
     def get(self, request):
         marks_of_user = Marks_Of_User.objects.filter(user=request.user)
         rating = Rating.objects.get(user=request.user)
         context = {
+            **self.permissions_view(request),
             'marks_of_user': marks_of_user,
             'rating': rating
         }
@@ -140,10 +152,18 @@ class ClearView(View):
         return redirect('profile')
 
 
-class RatingView(View):
+class RatingView(PermissionsViewMixin, View):
 
     def get(self, request):
         rating = Rating.objects.order_by('-rating')
-        print(rating)
-        return render(request, 'quiz/rating.html', {'rating': rating})
+        count = 0
+        rating_len = []
+        for num in range(len(rating)):
+            count += 1
+            rating_len.append(count)
+        context = {
+            **self.permissions_view(request),
+            'rating': list(zip(rating, rating_len))
+        }
+        return render(request, 'quiz/rating.html', context)
 

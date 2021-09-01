@@ -36,9 +36,11 @@
 
 
   {% if request.user.is_authenticated  %}
+  {% if perms %}
     <span ><a  class="greet" href="{% url 'upload-file' %}">Add Quiz</a></span>
+  {%endif%}
     <span ><a  class="greet" href="{% url 'profile' %}">Profile</a></span>
-    <span class="greet">Hello, {{request.user.first_name}}</span>
+    <span class="greet">Hello, {{request.user.first_name}} {% if perms %}(admin){% endif %}</span>
     <span ><a  class="greet" href="{% url 'logout' %}">Logout</a></span>
   {% endif %}
 </nav>
