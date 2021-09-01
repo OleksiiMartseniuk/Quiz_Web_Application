@@ -43,6 +43,7 @@ class AddQuizMixin:
             xlsx.activated = True
             xlsx.save()
             return True
-        except Exception:
+        except Exception as _ex:
+            print(_ex)
             xlsx.delete()
             return False

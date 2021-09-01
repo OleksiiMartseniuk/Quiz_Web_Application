@@ -5,8 +5,7 @@ from django.utils.text import slugify
 
 class Quiz(models.Model):
     name = models.CharField(max_length=50)
-    ### изменить
-    url = models.SlugField(max_length=200, unique=True, blank=True, null=True)
+    url = models.SlugField(max_length=200, unique=True)
     desc = models.CharField(max_length=500)
     number_of_questions = models.IntegerField(default=1)
     time = models.IntegerField(help_text="Duration of the quiz in seconds", default="1")
@@ -50,9 +49,8 @@ class Marks_Of_User(models.Model):
     percentage = models.FloatField()
     time = models.IntegerField(help_text="lead time", default="1")
     data = models.DateTimeField(auto_now_add=True)
-    ### изменить
-    correct = models.IntegerField(blank=True, null=True)
-    incorrect = models.IntegerField(blank=True, null=True)
+    correct = models.IntegerField()
+    incorrect = models.IntegerField()
 
     def __str__(self):
         return f'{str(self.quiz)} ({self.user.username})'

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
+
 
 <h1 class="text-center mt-5" >Quiz</h1>
   {% if quiz  %}
@@ -22,7 +22,7 @@
                     <a href="{% url 'detail' q.url%}" class="btn btn-sm btn-outline-secondary">View</a>
 
                   </div>
-                  <small class="text-muted">Время виполнения {{ q.time }} seconds</small>
+                  <small class="text-muted">Time {{ q.time }} seconds</small>
                 </div>
               </div>
             </div>
