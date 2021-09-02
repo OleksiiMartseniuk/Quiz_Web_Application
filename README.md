@@ -47,7 +47,7 @@ Uplioad-file (The page is available only to the administrator):
 [quiz1]: ./screenshots/quiz1.png
 [home]: ./screenshots/home.png
 [registration]: ./screenshots/registration.png
-[login]: ./screenshots/autorization.png
+[login]: ./screenshots/authorization.png
 
 # Instructions
 
